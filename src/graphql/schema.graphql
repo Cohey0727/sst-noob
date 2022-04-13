@@ -1,0 +1,4 @@
+type Query {
+  health: String
+  presignedUrl(userId: String!, fileName: String!): String!
+}
