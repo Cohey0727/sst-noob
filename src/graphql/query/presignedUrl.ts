@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  PutObjectCommand,
+  PutObjectCommandInput,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -8,13 +12,14 @@ const presignedUrl = async (args: { userId: string; fileName: string }) => {
   const { fileName, userId } = args;
   const ext = fileName.split(".").pop();
   const uuidName = uuidv4();
-  const params = {
+
+  const params: PutObjectCommandInput = {
     Bucket: "okamoto-public-assets",
-    Key: `${userId}/${uuidName}/${ext}`,
+    Key: `${userId}/${uuidName}.${ext}`,
   };
 
   return getSignedUrl(s3Client, new PutObjectCommand(params), {
-    expiresIn: 60,
+    expiresIn: 60 * 10,
   });
 };
 

@@ -1,12 +1,9 @@
-import fs from "fs";
-import { ApolloServer, gql } from "apollo-server-lambda";
+import { ApolloServer } from "apollo-server-lambda";
 import { presignedUrl } from "./query";
 import { Resolvers } from "./generated/graphql";
+import schema from "./schema";
 
 const IS_LOCAL = Boolean(process.env.IS_LOCAL);
-const schema = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
-
-const typeDefs = gql(schema);
 
 const resolvers: Resolvers = {
   Query: {
@@ -18,9 +15,10 @@ const resolvers: Resolvers = {
 };
 
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: schema,
   resolvers: resolvers,
-  introspection: IS_LOCAL,
+  // introspection: IS_LOCAL,
+  introspection: true,
 });
 
 export const handler = server.createHandler();
